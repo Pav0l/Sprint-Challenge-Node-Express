@@ -18,15 +18,27 @@ routes.get('/', async (req, res, next) => {
 
 routes.get('/:id', async (req, res, next) => {
   const { id } = req.params;
-  try {
-    const projects = await Project.getProjectActions(id);
-    if (projects.length > 0) {
-      res.status(200).json(projects);
-    } else {
-      next({ status: 404, message: `Project with ID ${id} does not exist or the project doesn't have any actions` })
+  const { actions } = req.query;
+
+  if (actions === "true") {
+    try {
+      const actionsForProject = await Project.getProjectActions(id);
+      if (actionsForProject.length > 0) {
+        res.status(200).json(actionsForProject);
+      } else {
+        next({ status: 404, message: `Project with ID ${id} does not exist or the project doesn't have any actions` })
+      }
+    } catch {
+      next({ status: 500, message: "Server Error. Could not retreive your data" });
     }
-  } catch {
-    next({ status: 500, message: "ID Error. Could not retreive your data" });
+  } else {
+    try {
+      const project = await Project.get(id);
+      res.status(200).json(project);
+      // if id does not exist, it will return an error, which will go directly to catch {}
+    } catch {
+      next({ status: 404, message: `Project with ID ${id} does not exist` });
+    }
   }
 });
 
@@ -63,14 +75,6 @@ routes.put('/:id', async (req, res, next) => {
   const { name, description } = req.body;
   if (name && description) {
     try {
-      // get the object you want to update
-      // const actionToUpdate = await Project.get(id);
-      // make sure the user can update only proper key:value pairs
-      // const actionObj = {
-      //   ...actionToUpdate,
-      //   name,
-      //   description
-      // }
       const updatedAction = await Project.update(id, req.body);
       if (updatedAction) {
         res.status(200).json(updatedAction);
