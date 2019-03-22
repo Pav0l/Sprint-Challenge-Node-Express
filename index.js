@@ -1,3 +1,7 @@
-// play this: https://www.youtube.com/watch?v=d-diB65scQU
+const app = require('./server');
 
-// code away!
+
+const PORT = process.env.PORT || 3333;
+app.listen(PORT, () => {
+  console.log(`Express app listening on http://localhost:${PORT}`);
+});
