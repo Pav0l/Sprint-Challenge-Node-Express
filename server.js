@@ -6,14 +6,14 @@ const errorHandler = require('./middleware/errorHandler');
 const app = express();
 
 const projectUrl = "/api/projects";
-const actionUrl = "/api/actions"
+const actionUrl = "/api/actions";
 
 app.use(express.json());
 app.use(projectUrl, projectRoutes);
 app.use(actionUrl, actionRoutes);
 
 app.get('/', (req, res) => {
-  res.json('Hello from home page.')
+  res.json('Hello from home page.');
 })
 
 

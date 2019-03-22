@@ -19,11 +19,8 @@ routes.get('/:id', async (req, res, next) => {
   const { id } = req.params;
   try {
     const actions = await Action.get(id);
-    if (actions) {
-      res.status(200).json(actions);
-    } else {
-      next({ status: 404, message: `Action with ID ${id} does not exist` })
-    }
+    // if id does not exist, it will return an error, that will go directly to catch {}
+    res.status(200).json(actions);
   } catch {
     next({ status: 500, message: "ID Error. Could not retreive your data" });
   }
